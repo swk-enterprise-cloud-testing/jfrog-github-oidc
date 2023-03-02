@@ -1,1 +1,33 @@
+name: "JFrog Integration Example"
+on: push
 
+jobs:
+  build:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout
+         uses: actions/checkout@v3
+       - name: Setup JFrog CLI
+         uses: jfrog/setup-jfrog-cli@v3
+         env:  
+           SERVER_URL: ${{ secrets.JF_URL }}           # Required (e.g. https://jfrogy.com/artifactory)
+           ACCESS_TYPE: api-key                            # Required  (username-password, access-token, api-key)
+           API_KEY: ${{ secrets.JF_ACCESS_TOKEN }}
+       - name: Setup Node npm
+         uses: actions/setup-node@v3
+       - name: Set CLI Config
+         run: jf npm-config --global=true --repo-resolve=my-npm --repo-deploy=my-npm
+       - name: Clean Env
+         run: cd package && rm -rf node_modules 
+       - name: Install Deps
+         run:  cd package && ls -la && jf npm install
+       - name: Run tests
+         run:  cd package && npm test
+       - name: Publish Build info With JFrog CLI
+         run: |
+          # Collect environment variables for the build
+          jf rt bce
+          # Collect VCS details from git and add them to the build
+          jf rt bag
+          # Publish build info
+          jf rt bp
