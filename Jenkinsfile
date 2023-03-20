@@ -1,5 +1,5 @@
 node {
-    def server = Artifactory.server myjfrogtutorial
+    def server = Artifactory.server 'myjfrogtutorial'
     def rtNpm = Artifactory.newNpmBuild()
     def buildInfo
 
