@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         jfrog 'jfrog-cli'
-        node 'nodejs'
+        nodejs 'nodejs'
     }
     stages {
         stage('Clone') {
