@@ -1,28 +1,34 @@
-node {
-    def server = Artifactory.server 'myjfrogtutorial'
-    def rtNpm = Artifactory.newNpmBuild()
-    def buildInfo
-
-    stage ('Clone') {
-        git url: 'https://github.com/jfrog/project-examples.git'
+pipeline {
+    agent any
+    tools {
+        jfrog 'jfrog-cli'
     }
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'master', url: "https://github.com/jfrog/project-examples.git"
+            }
+        }
 
-    stage ('Artifactory configuration') {
-        rtNpm.deployer repo: 'my-npm', server: server
-        rtNpm.resolver repo: 'my-npm', server: server
-        rtNpm.tool = 'nodejs' // Tool name from Jenkins configuration
-        buildInfo = Artifactory.newBuildInfo()
-    }
+        stage('Exec npm commands') {
+            steps {
+                dir('npm-example') {
+                    // Configure npm project's repositories
+                    jf 'npm-config --repo-resolve my-npm --repo-deploy my-npm'
 
-    stage ('Install npm') {
-        rtNpm.install buildInfo: buildInfo, path: 'npm-example'
-    }
+                    // Install dependencies
+                    jf 'npm install'
 
-    stage ('Publish npm') {
-        rtNpm.publish buildInfo: buildInfo, path: 'npm-example'
-    }
+                    // Pack and deploy the npm package
+                    jf 'npm publish'
+                }
+            }
+        }
 
-    stage ('Publish build info') {
-        server.publishBuildInfo buildInfo
+        stage('Publish build info') {
+            steps {
+                jf 'rt build-publish'
+            }
+        }
     }
 }
