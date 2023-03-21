@@ -5,7 +5,7 @@ pipeline {
         nodejs 'nodejs'
     }
     stages {
-        stage('Clonee') {
+        stage('Clone') {
             steps {
                 git branch: 'master', url: "https://github.com/jfrog/project-examples.git"
             }
