@@ -4,7 +4,7 @@ pipeline {
         jfrog 'jfrog-cli'
         nodejs 'nodejs'
     }
-    
+   
     stages {
         stage('Clone') {
             steps {
