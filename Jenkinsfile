@@ -10,7 +10,6 @@ pipeline {
                 git branch: 'master', url: "https://github.com/jfrog/project-examples.git"
             }
         }
-
         stage('Exec npm commands') {
             steps {
                 dir('npm-example') {
