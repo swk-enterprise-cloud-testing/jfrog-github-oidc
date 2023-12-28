@@ -17,13 +17,7 @@ jobs:
      steps:
        - name: Checkout
          uses: actions/checkout@v3
-         
-       - name: Setup JFrog CLI
-         uses: jfrog/setup-jfrog-cli@v3
-         env:  
-           JF_URL: ${{ secrets.JF_URL }}
-           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
-           
+              
        - name: Setup Node npm
          uses: actions/setup-node@v3
 
@@ -48,7 +42,13 @@ jobs:
           "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github-oidc-integration\"}" | jq .access_token | tr -d '"')
           echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
           echo "Token is $ACCESS_TOKEN"
-
+          
+       - name: Setup JFrog CLI
+         uses: jfrog/setup-jfrog-cli@v3
+         env:  
+           JF_URL: ${{ secrets.JF_URL }}
+           JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
+           
        - name: Set CLI Config
          run: jf npm-config --global=true --repo-resolve=eks-npm --repo-deploy=eks-npm
            
