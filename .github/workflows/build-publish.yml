@@ -21,7 +21,7 @@ jobs:
        - name: Set CLI Config
          run: jf npm-config --global=true --repo-resolve=npm-virtual --repo-deploy=npm-virtual
            
-       - name: Install Deps
+       - name: Install Dependanices
          run: jf npm install
            
        - name: Run tests
