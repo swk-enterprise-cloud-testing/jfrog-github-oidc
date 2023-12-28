@@ -19,7 +19,7 @@ jobs:
          uses: actions/setup-node@v3
            
        - name: Set CLI Config
-         run: jf npm-config --global=true --repo-resolve=npm-virtual --repo-deploy=eks-npm
+         run: jf npm-config --global=true --repo-resolve=eks-npm --repo-deploy=eks-npm
            
        - name: Install Dependanices
          run: jf npm install
