@@ -39,7 +39,7 @@ jobs:
           -H "Content-type: application/json" \
           https://devreleplus.jfrog.io/access/api/v1/oidc/token \
           -d \
-          "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github\"}")
+          "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github\"}" | jq .access_token | tr -d '"' )
           echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
           echo "Token is $ACCESS_TOKEN"
           
