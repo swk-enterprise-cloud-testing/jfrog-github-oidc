@@ -34,7 +34,21 @@ jobs:
           "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
           echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_OUTPUT
           echo "The token is ${ID_TOKEN}"
-           
+
+       - name: Fetch Access Token from Artifactory
+         id: fetch_access_token
+         env:
+          ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
+         run: |
+          ACCESS_TOKEN=$(curl \
+          -X POST \
+          -H "Content-type: application/json" \
+          https://devreleplus.jfrog.io/access/api/v1/oidc/token \
+          -d \
+          "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"$ID_TOKEN\", \"provider_name\": \"github-oidc-integration\"}" | jq .access_token | tr -d '"')
+          echo ACCESS_TOKEN=$ACCESS_TOKEN >> $GITHUB_OUTPUT
+          echo "Token is $ACCESS_TOKEN"
+
        - name: Set CLI Config
          run: jf npm-config --global=true --repo-resolve=eks-npm --repo-deploy=eks-npm
            
