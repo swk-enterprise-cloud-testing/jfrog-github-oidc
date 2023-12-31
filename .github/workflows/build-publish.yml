@@ -19,14 +19,12 @@ jobs:
        - name: Checkout
          uses: actions/checkout@v3
               
-       - name: Install OIDC Client from Core Package
-         run: npm i @actions/core @actions/http-client @actions/github
-        
        - name: Get ID Token (@actions/core method)
          uses: actions/github-script@v7
          id: idtoken
          with:
            script: |
+             npm i @actions/core @actions/http-client 
              const coredemo = require('@actions/core');
              let id_token = await coredemo.getIDToken(process.env.OIDC_AUDIENCE);
              coredemo.setOutput('id_token', id_token);
