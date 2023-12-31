@@ -24,7 +24,7 @@ jobs:
          id: idtoken
          with:
            script: |
-             npm i @actions/core @actions/http-client 
+             npm install @actions/core @actions/http-client 
              const coredemo = require('@actions/core');
              let id_token = await coredemo.getIDToken(process.env.OIDC_AUDIENCE);
              coredemo.setOutput('id_token', id_token);
