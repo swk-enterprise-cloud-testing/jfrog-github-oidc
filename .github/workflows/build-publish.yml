@@ -19,9 +19,6 @@ jobs:
        - name: Checkout
          uses: actions/checkout@v3
               
-       - name: Setup Node npm
-         uses: actions/setup-node@v3
-
        - name: Install OIDC Client from Core Package
          run: npm install @actions/core @actions/http-client
         
