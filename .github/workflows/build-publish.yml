@@ -26,8 +26,8 @@ jobs:
          uses: actions/github-script@v7
          id: idtoken
          with:
+           run: npm install @actions/core @actions/http-client 
            script: |
-             npm install @actions/core @actions/http-client 
              const coredemo = require('@actions/core');
              let id_token = await coredemo.getIDToken(process.env.OIDC_AUDIENCE);
              coredemo.setOutput('id_token', id_token);
