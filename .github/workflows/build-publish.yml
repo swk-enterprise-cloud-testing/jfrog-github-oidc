@@ -10,10 +10,11 @@ permissions:
 jobs:
   build:
      runs-on: ubuntu-latest
+     env:
+      OIDC_AUDIENCE: 'jfrog-github'
      defaults:
       run:
         working-directory: ./package
-       
      steps:
        - name: Checkout
          uses: actions/checkout@v3
@@ -21,13 +22,14 @@ jobs:
        - name: Setup Node npm
          uses: actions/setup-node@v3
 
-       - name: Get ID Token
+       - name: Get ID Token (@actions/core method)
+         uses: actions/github-script@v7
          id: idtoken
-         run: |
-          ID_TOKEN=$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq .value | tr -d '"')
-          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_OUTPUT
-          echo "The token is ${ID_TOKEN}"
+         with:
+          script: |
+            const coredemo = require('@actions/core');
+            let id_token = await coredemo.getIDToken(process.env.OIDC_AUDIENCE);
+            coredemo.setOutput('id_token', id_token);
 
        - name: Fetch Access Token from Artifactory
          id: fetch_access_token
