@@ -1,4 +1,4 @@
-name: "JFrog-GitHub OIDC Integration"
+name: "JFrog-GitHub NPM Publish OIDC Integration"
 on: push
 
 # This is required as per
