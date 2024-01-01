@@ -12,6 +12,7 @@ jobs:
      runs-on: ubuntu-latest
      env:
       OIDC_AUDIENCE: 'jfrog-github'
+      PLATFORM_REPO: 'eks-npm'
      defaults:
       run:
         working-directory: ./package
@@ -50,7 +51,7 @@ jobs:
            JF_ACCESS_TOKEN: ${{ steps.fetch_access_token.outputs.ACCESS_TOKEN }}
            
        - name: Set CLI Config
-         run: jf npm-config --global=true --repo-resolve=eks-npm --repo-deploy=eks-npm
+         run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
            
        - name: Install Dependanices
          run: jf npm install
