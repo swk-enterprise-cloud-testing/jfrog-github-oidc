@@ -35,6 +35,7 @@ jobs:
          env:
           ID_TOKEN: ${{ steps.idtoken.outputs.id_token }}
          run: |
+          echo "$ID_TOKEN"
           ACCESS_TOKEN=$(curl \
           -X POST \
           -H "Content-type: application/json" \
