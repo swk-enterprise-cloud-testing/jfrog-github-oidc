@@ -31,7 +31,7 @@ jobs:
            oidc-audience: jfrog-github
 
        - name: Set CLI Config
-         run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
+         run: jf npm-config --global=true --repo-resolve='npm-remote' --repo-deploy=$PLATFORM_REPO
            
        - name: Install Dependencies
          run: jf npm install
