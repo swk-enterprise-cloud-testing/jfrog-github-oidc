@@ -4,6 +4,7 @@
   "description": "Add a frog emoji to a given string and do some more frog stuff related 🐸",
   "main": "index.js",
   "scripts": {
+    "install": "jf npm install",
     "test": "cd tests && jest"
   },
   "repository": {
