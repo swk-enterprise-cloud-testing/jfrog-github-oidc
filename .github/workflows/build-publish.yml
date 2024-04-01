@@ -6,25 +6,11 @@ permissions:
   actions: read # For getting workflow run info.
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
-        env:  
-          JF_URL: ${{ secrets.JF_URL }}
-        with:
-           oidc-provider-name: ${{ env.OIDC_PROVIDER }}
-           oidc-audience: ${{ env.OIDC_AUDIENCE }}
-           
-      - name: Set CLI Config
-        run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
-          
-      - name: Build Provenance
-        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
-        with:
-          directory: ./package
-          run-scripts: "install, test"
-  
+   uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
+   with:
+     directory: ./package
+     run-scripts: "install, test"
+     
   publish:
     needs: [build]
     runs-on: ubuntu-latest
