@@ -5,12 +5,13 @@ permissions:
       contents: read # For repo checkout.
       actions: read # For getting workflow run info.
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     env:
       OIDC_AUDIENCE: 'jfrog-github'
       OIDC_PROVIDER: 'github'
       PLATFORM_REPO: 'eks-npm'
+      
     steps:
       - name: Setup Node
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
