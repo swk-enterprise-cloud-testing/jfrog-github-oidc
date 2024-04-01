@@ -20,7 +20,7 @@ jobs:
         run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
           
       - name: Build Provenance
-        uses: slsa-framework/slsa-github-generator@v1.10.0
+        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
         with:
           directory: ./package
           run-scripts: "install, test"
