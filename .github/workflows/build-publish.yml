@@ -8,7 +8,7 @@ jobs:
   build:
    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
    with:
-     directory: /package
+     directory: ./package
   # run-scripts: "install, test"
      
   publish:
@@ -20,7 +20,7 @@ jobs:
       PLATFORM_REPO: 'eks-npm'
     defaults:
       run:
-        working-directory: ./package
+        working-directory: /package
     steps:
       - name: Setup Node
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
