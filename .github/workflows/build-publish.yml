@@ -21,7 +21,7 @@ jobs:
       PLATFORM_REPO: 'eks-npm'
     defaults:
       run:
-        working-directory: package
+        working-directory: ../package
     steps:
       - name: Setup Node
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
