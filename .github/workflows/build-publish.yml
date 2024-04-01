@@ -55,7 +55,7 @@ jobs:
       #   run: jf npm publish
 
       - name: Publish the package
-        working-directory: ../../package
+        working-directory: /package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
