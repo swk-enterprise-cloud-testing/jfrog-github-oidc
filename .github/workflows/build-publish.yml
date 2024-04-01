@@ -1,52 +1,71 @@
 name: "JFrog-GitHub NPM Publish OIDC Integration"
 on: push
 
-# This is required as per
-# https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#adding-permissions-settings
-permissions:
-  id-token: write
-
 jobs:
   build:
-     runs-on: ubuntu-latest
-     env:
+    permissions:
+      id-token: write # For signing
+      contents: read # For repo checkout.
+      actions: read # For getting workflow run info.
+    if: startsWith(github.ref, 'refs/tags/')
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
+    with:
+      run-scripts: ""
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+    env:
       OIDC_AUDIENCE: 'jfrog-github'
+      OIDC_PROVIDER: 'github'
       PLATFORM_REPO: 'eks-npm'
-     defaults:
+    defaults:
       run:
         working-directory: ./package
-     steps:
-       - name: Checkout
-         uses: actions/checkout@v3
-              
-       - name: Setup Node npm
-         uses: actions/setup-node@v3
-   
-       - name: Setup JFrog CLI
-         uses: jfrog/setup-jfrog-cli@v3
-         env:  
-           JF_URL: ${{ secrets.JF_URL }}
-         with:
-           oidc-provider-name: github
-           oidc-audience: jfrog-github
+    steps:
+      - name: Setup Node
+        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
+        with:
+          node-version: 18
+          registry-url: "https://registry.npmjs.org"
 
-       - name: Set CLI Config
-         run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
+      - name: Download tarball
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v1.10.0
+        with:
+          name: ${{ needs.build.outputs.package-download-name }}
+          path: ${{ needs.build.outputs.package-name }}
+          sha256: ${{ needs.build.outputs.package-download-sha256 }}
+
+      - name: Download provenance
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v1.10.0
+        with:
+          name: ${{ needs.build.outputs.provenance-download-name }}
+          path: "attestations"
+          sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
+          
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v3
+        env:  
+          JF_URL: ${{ secrets.JF_URL }}
+        with:
+          oidc-provider-name: ${{ env.OIDC_PROVIDER }}
+          oidc-audience: ${{ env.OIDC_AUDIENCE }}
+          
+      - name: Set CLI Config
+        run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
            
-       - name: Install Dependencies
-         run: jf npm install
+      - name: Install Dependencies
+        run: jf npm install
            
-       - name: Run tests
-         run: npm test
+      - name: Run tests
+        run: npm test
          
-       - name: Publish
-         run: jf npm publish
-         
-       - name: Publish Build info With JFrog CLI
-         run: |
-          # Collect environment variables for the build
-          jf rt build-collect-env
-          # Collect VCS details from git and add them to the build
-          jf rt build-add-git
-          # Publish build info
-          jf rt build-publish
+      # - name: Publish
+      #   run: jf npm publish
+
+      - name: Publish the package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
+          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
+        run: |
+          jf npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
