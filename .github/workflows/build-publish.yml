@@ -1,40 +1,29 @@
 name: "JFrog-GitHub NPM Publish OIDC Integration"
 on: push
-permissions:
+
+jobs:
+  build:
+    permissions:
       id-token: write # For signing
       contents: read # For repo checkout.
       actions: read # For getting workflow run info.
-jobs:
-  build:
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
+    with:
+      directory: ./package
+      run-scripts: "install, test, build"
+  publish:
+    needs: [build]
     runs-on: ubuntu-latest
     env:
       OIDC_AUDIENCE: 'jfrog-github'
       OIDC_PROVIDER: 'github'
       PLATFORM_REPO: 'eks-npm'
-      
     steps:
       - name: Setup Node
         uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3.7.0
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
-
-      - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
-        env:  
-          JF_URL: ${{ secrets.JF_URL }}
-        with:
-          oidc-provider-name: ${{ env.OIDC_PROVIDER }}
-          oidc-audience: ${{ env.OIDC_AUDIENCE }}
-          
-      - name: Set CLI Config
-        run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
-
-      - name: Building
-        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v1.10.0
-        with:
-          directory: ./package
-          run-scripts: "install, test"
 
       - name: Download tarball
         uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v1.10.0
@@ -49,7 +38,18 @@ jobs:
           name: ${{ needs.build.outputs.provenance-download-name }}
           path: "attestations"
           sha256: ${{ needs.build.outputs.provenance-download-sha256 }}
-                     
+          
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v3
+        env:  
+          JF_URL: ${{ secrets.JF_URL }}
+        with:
+          oidc-provider-name: ${{ env.OIDC_PROVIDER }}
+          oidc-audience: ${{ env.OIDC_AUDIENCE }}
+          
+      - name: Set CLI Config
+        run: jf npm-config --global=true --repo-resolve=$PLATFORM_REPO --repo-deploy=$PLATFORM_REPO
+           
       - name: Install Dependencies
         run: jf npm install
            
