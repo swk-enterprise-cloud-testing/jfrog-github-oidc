@@ -25,7 +25,10 @@ jobs:
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org"
-
+          
+      - name: Checkout
+        uses: actions/checkout@v4
+        
       - name: Download tarball
         uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-package-download@v1.10.0
         with:
