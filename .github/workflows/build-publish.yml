@@ -59,9 +59,9 @@ jobs:
       
       - name: Publish the package
         env:
-          TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
+          TARBALL_PATH: "../${{ needs.build.outputs.package-name }}"
           JFROG_CLI_LOG_LEVEL: "DEBUG"
-          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-download-name }}"
+          PROVENANCE_PATH: "../attestations/${{ needs.build.outputs.provenance-download-name }}"
         run: |
              curl -u yonatan:${{ secrets.JF_TOKEN }} "https://devreleplus.jfrog.io/artifactory/api/npm/eks-npm-local/auth/jfrog" > .npmrc
              cat .npmrc
