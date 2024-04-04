@@ -58,8 +58,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
-          PROVENANCE_PATH: "/attestations/${{ needs.build.outputs.provenance-name }}"
+          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
         run: |
+             cd ./attestations
              ls
              pwd
              curl -u yonatan:${{ secrets.JF_TOKEN }} "https://devreleplus.jfrog.io/artifactory/api/npm/eks-npm-local/auth/jfrog" > .npmrc
