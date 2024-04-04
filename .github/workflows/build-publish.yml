@@ -59,5 +59,7 @@ jobs:
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
           PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-download-name }}"
         run: |
+             cd ${PROVENANCE_PATH}
+             ls -la
              curl -u yonatan:${{ secrets.JF_TOKEN }} "https://devreleplus.jfrog.io/artifactory/api/npm/eks-npm-local/auth/jfrog" > .npmrc
              npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
