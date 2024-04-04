@@ -58,7 +58,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
-          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
+          PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-download-sha256 }}-slsa-attestation"
         run: |
              cd ./attestations
              ls
