@@ -55,12 +55,8 @@ jobs:
       #   run: jf npm publish
 
       - name: Publish the package
-        working-directory: /package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TARBALL_PATH: "${{ needs.build.outputs.package-name }}"
           PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-name }}"
-        run: |
-              ls
-              pwd
-              jf npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
+        run:  npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}"
