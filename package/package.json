@@ -2,6 +2,9 @@
   "name": "jfrog-npm-example",
   "version": "1.0.0",
   "description": "Add a frog emoji to a given string and do some more frog stuff related 🐸",
+  "publishConfig": {
+    "registry": "https://devreleplus.jfrog.io/artifactory/api/npm/eks-npm-local/"
+  },
   "main": "index.js",
   "scripts": {
     "test": "cd tests && jest"
