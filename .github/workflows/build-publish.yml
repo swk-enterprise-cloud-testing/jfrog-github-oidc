@@ -60,4 +60,4 @@ jobs:
           PROVENANCE_PATH: "./attestations/${{ needs.build.outputs.provenance-download-name }}"
         run: |
              curl -u yonatan:${{ secrets.JF_TOKEN }} "https://devreleplus.jfrog.io/artifactory/api/npm/eks-npm-local/auth/jfrog" > .npmrc
-             npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}/jfrog-npm-example-1.0.0.build.slsa"
+             jf npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}/jfrog-npm-example-1.0.0.build.slsa"
