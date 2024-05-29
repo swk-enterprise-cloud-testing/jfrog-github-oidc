@@ -62,6 +62,7 @@ jobs:
           TARBALL_PATH: "../${{ needs.build.outputs.package-name }}"
           JFROG_CLI_LOG_LEVEL: "DEBUG"
           PROVENANCE_PATH: "../attestations/${{ needs.build.outputs.provenance-download-name }}"
+          JFROG_CLI_COMMAND_SUMMARY_OUTPUT_DIR: "${{ github.workspace }}/command-summary"
         run: |
           curl -u swarnendukayal@github.com:${{ secrets.JF_TOKEN }} "https://swktest.jfrog.io/artifactory/api/npm/eks-npm-local/auth/jfrog" > .npmrc
           cat .npmrc
@@ -69,5 +70,3 @@ jobs:
           ls
           jf npm publish "${TARBALL_PATH}" --access=public --provenance-file="${PROVENANCE_PATH}/jfrog-npm-example-1.0.0.build.slsa" --build-name=integration-project --build-number=${{ github.run_id }}
           jf rt bp integration-project ${{ github.run_id }}
-          env:
-            JFROG_CLI_COMMAND_SUMMARY_OUTPUT_DIR: ${{ github.workspace }}/command-summary
